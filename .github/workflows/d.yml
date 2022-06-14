@@ -14,8 +14,8 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         dc: [ldc-latest, dmd-latest]
         include:
-          - os: ubuntu-latest
-            dc: gdc
+          - os: ubuntu-22.04
+            dc: gdc-12
 
     steps:
     - uses: actions/checkout@v2
@@ -27,18 +27,20 @@ jobs:
         compiler: ${{ matrix.dc }}
 
     - name: Install GDC
-      if: matrix.dc == 'gdc'
+      if: matrix.dc == 'gdc-12'
       run: |
-        sudo apt install gdc
+        sudo apt-get install gdc-12
         wget https://github.com/dlang/dub/releases/download/v1.23.0/dub-v1.23.0-linux-x86_64.tar.gz
         tar xvf dub-v1.23.0-linux-x86_64.tar.gz
 
     - name: 'Build & Test'
+      if: matrix.dc != 'gdc-12'
       run: |
-        export PATH=$PATH:`pwd` # for GDC build
-        # Build the project, with its main file included, without unittests
         dub build
-        # Build and run tests, as defined by `unittest` configuration
-        # In this mode, `mainSourceFile` is excluded and `version (unittest)` are included
-        # See https://dub.pm/package-format-json.html#configurations
         dub test
+
+    - name: 'Build & Test'
+      if: matrix.dc == 'gdc-12'
+      run: |
+        ./dub build --compiler=${{ matrix.dc }}
+        ./dub test --compiler=${{ matrix.dc }}

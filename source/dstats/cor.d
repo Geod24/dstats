@@ -134,9 +134,9 @@ if(doubleInput!(T) && doubleInput!(U)) {
 }
 
 unittest {
-    assert(approxEqual(pearsonCor([1,2,3,4,5][], [1,2,3,4,5][]).cor, 1));
-    assert(approxEqual(pearsonCor([1,2,3,4,5][], [10.0, 8.0, 6.0, 4.0, 2.0][]).cor, -1));
-    assert(approxEqual(pearsonCor([2, 4, 1, 6, 19][], [4, 5, 1, 3, 2][]).cor, -.2382314));
+    assert(isClose(pearsonCor([1,2,3,4,5][], [1,2,3,4,5][]).cor, 1, 1e-2, 1e-2));
+    assert(isClose(pearsonCor([1,2,3,4,5][], [10.0, 8.0, 6.0, 4.0, 2.0][]).cor, -1, 1e-2, 1e-2));
+    assert(isClose(pearsonCor([2, 4, 1, 6, 19][], [4, 5, 1, 3, 2][]).cor, -.2382314, 1e-2, 1e-2));
 
         // Make sure everything works with lowest common denominator range type.
     static struct Count {
@@ -156,7 +156,7 @@ unittest {
     Count a, b;
     a.upTo = 100;
     b.upTo = 100;
-    assert(approxEqual(pearsonCor(a, b).cor, 1));
+    assert(isClose(pearsonCor(a, b).cor, 1, 1e-2, 1e-2));
 
     PearsonCor cor1 = pearsonCor([1,2,4][], [2,3,5][]);
     PearsonCor cor2 = pearsonCor([4,2,9][], [2,8,7][]);
@@ -165,11 +165,11 @@ unittest {
     cor1.put(cor2);
 
     foreach(ti, elem; cor1.tupleof) {
-        assert(approxEqual(elem, combined.tupleof[ti]));
+        assert(isClose(elem, combined.tupleof[ti], 1e-2, 1e-2));
     }
 
-    assert(approxEqual(pearsonCor([1,2,3,4,5,6,7,8,9,10][],
-        [8,6,7,5,3,0,9,3,6,2][]).cor, -0.4190758));
+    assert(isClose(pearsonCor([1,2,3,4,5,6,7,8,9,10][],
+        [8,6,7,5,3,0,9,3,6,2][]).cor, -0.4190758, 1e-2, 1e-2));
 
     foreach(iter; 0..1000) {
         // Make sure results for the ILP-optimized and non-optimized versions
@@ -183,7 +183,7 @@ unittest {
         }
 
         foreach(ti, elem; res1.tupleof) {
-            assert(approxEqual(elem, res2.tupleof[ti]));
+            assert(isClose(elem, res2.tupleof[ti], 1e-2, 1e-2));
         }
 
         PearsonCor resCornerCase;  // Test where one N is zero.
@@ -313,7 +313,7 @@ if(doubleInput!(T) && doubleInput!(U)) {
 }
 
 unittest {
-    assert(approxEqual(covariance([1,4,2,6,3].dup, [3,1,2,6,2].dup), 2.05));
+    assert(isClose(covariance([1,4,2,6,3].dup, [3,1,2,6,2].dup), 2.05, 1e-2, 1e-2));
 }
 
 /**Spearman's rank correlation.  Non-parametric.  This is essentially the
@@ -358,18 +358,18 @@ is(typeof(input2.front < input2.front) == bool)) {
 
 unittest {
     //Test against a few known values.
-    assert(approxEqual(spearmanCor([1,2,3,4,5,6].dup, [3,1,2,5,4,6].dup), 0.77143));
-    assert(approxEqual(spearmanCor([3,1,2,5,4,6].dup, [1,2,3,4,5,6].dup ), 0.77143));
-    assert(approxEqual(spearmanCor([3,6,7,35,75].dup, [1,63,53,67,3].dup), 0.3));
-    assert(approxEqual(spearmanCor([1,63,53,67,3].dup, [3,6,7,35,75].dup), 0.3));
-    assert(approxEqual(spearmanCor([1.5,6.3,7.8,4.2,1.5].dup, [1,63,53,67,3].dup), .56429));
-    assert(approxEqual(spearmanCor([1,63,53,67,3].dup, [1.5,6.3,7.8,4.2,1.5].dup), .56429));
-    assert(approxEqual(spearmanCor([1.5,6.3,7.8,7.8,1.5].dup, [1,63,53,67,3].dup), .79057));
-    assert(approxEqual(spearmanCor([1,63,53,67,3].dup, [1.5,6.3,7.8,7.8,1.5].dup), .79057));
-    assert(approxEqual(spearmanCor([1.5,6.3,7.8,6.3,1.5].dup, [1,63,53,67,3].dup), .63246));
-    assert(approxEqual(spearmanCor([1,63,53,67,3].dup, [1.5,6.3,7.8,6.3,1.5].dup), .63246));
-    assert(approxEqual(spearmanCor([3,4,1,5,2,1,6,4].dup, [1,3,2,6,4,2,6,7].dup), .6829268));
-    assert(approxEqual(spearmanCor([1,3,2,6,4,2,6,7].dup, [3,4,1,5,2,1,6,4].dup), .6829268));
+    assert(isClose(spearmanCor([1,2,3,4,5,6].dup, [3,1,2,5,4,6].dup), 0.77143, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([3,1,2,5,4,6].dup, [1,2,3,4,5,6].dup ), 0.77143, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([3,6,7,35,75].dup, [1,63,53,67,3].dup), 0.3, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1,63,53,67,3].dup, [3,6,7,35,75].dup), 0.3, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1.5,6.3,7.8,4.2,1.5].dup, [1,63,53,67,3].dup), .56429, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1,63,53,67,3].dup, [1.5,6.3,7.8,4.2,1.5].dup), .56429, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1.5,6.3,7.8,7.8,1.5].dup, [1,63,53,67,3].dup), .79057, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1,63,53,67,3].dup, [1.5,6.3,7.8,7.8,1.5].dup), .79057, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1.5,6.3,7.8,6.3,1.5].dup, [1,63,53,67,3].dup), .63246, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1,63,53,67,3].dup, [1.5,6.3,7.8,6.3,1.5].dup), .63246, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([3,4,1,5,2,1,6,4].dup, [1,3,2,6,4,2,6,7].dup), .6829268, 1e-2, 1e-2));
+    assert(isClose(spearmanCor([1,3,2,6,4,2,6,7].dup, [3,4,1,5,2,1,6,4].dup), .6829268, 1e-2, 1e-2));
     uint[] one = new uint[1000], two = new uint[1000];
     foreach(i; 0..100) {  //Further sanity checks for things like commutativity.
         size_t lowerBound = uniform(0, one.length);
@@ -396,10 +396,10 @@ unittest {
         two[lowerBound..upperBound].reverse();
         double sFive =
              spearmanCor(one[lowerBound..upperBound], two[lowerBound..upperBound]);
-        assert(approxEqual(sOne, sTwo) || (isNaN(sOne) && isNaN(sTwo)));
-        assert(approxEqual(sTwo, sThree) || (isNaN(sThree) && isNaN(sTwo)));
-        assert(approxEqual(sThree, sFour) || (isNaN(sThree) && isNaN(sFour)));
-        assert(approxEqual(sFour, sFive) || (isNaN(sFour) && isNaN(sFive)));
+        assert(isClose(sOne, sTwo, 1e-2, 1e-2) || (isNaN(sOne) && isNaN(sTwo)));
+        assert(isClose(sTwo, sThree, 1e-2, 1e-2) || (isNaN(sThree) && isNaN(sTwo)));
+        assert(isClose(sThree, sFour, 1e-2, 1e-2) || (isNaN(sThree) && isNaN(sFour)));
+        assert(isClose(sFour, sFive, 1e-2, 1e-2) || (isNaN(sFour) && isNaN(sFive)));
     }
 
     // Test input ranges.
@@ -420,7 +420,7 @@ unittest {
     Count a, b;
     a.upTo = 100;
     b.upTo = 100;
-    assert(approxEqual(spearmanCor(a, b), 1));
+    assert(isClose(spearmanCor(a, b), 1));
 }
 
 version(unittest) {
@@ -759,9 +759,9 @@ in {
 
 unittest {
     //Test against known values.
-    assert(approxEqual(kendallCor([1,2,3,4,5].dup, [3,1,7,4,3].dup), 0.1054093));
-    assert(approxEqual(kendallCor([3,6,7,35,75].dup,[1,63,53,67,3].dup), 0.2));
-    assert(approxEqual(kendallCor([1.5,6.3,7.8,4.2,1.5].dup, [1,63,53,67,3].dup), .3162287));
+    assert(isClose(kendallCor([1,2,3,4,5].dup, [3,1,7,4,3].dup), 0.1054093, 1e-2, 1e-2));
+    assert(isClose(kendallCor([3,6,7,35,75].dup,[1,63,53,67,3].dup), 0.2, 1e-2, 1e-2));
+    assert(isClose(kendallCor([1.5,6.3,7.8,4.2,1.5].dup, [1,63,53,67,3].dup), .3162287, 1e-2, 1e-2));
 
     static void doKendallTest(T)() {
         T[] one = new T[1000], two = new T[1000];
@@ -781,7 +781,7 @@ unittest {
                  kendallCor(one[lowerBound..upperBound], two[lowerBound..upperBound]);
             double kTwo =
                  kendallCorSmallN(one[lowerBound..upperBound], two[lowerBound..upperBound]);
-            assert(approxEqual(kOne, kTwo) || (isNaN(kOne) && isNaN(kTwo)));
+            assert(isClose(kOne, kTwo) || (isNaN(kOne) && isNaN(kTwo)));
         }
     }
 
@@ -807,12 +807,12 @@ unittest {
     Count a, b;
     a.upTo = 100;
     b.upTo = 100;
-    assert(approxEqual(kendallCor(a, b), 1));
+    assert(isClose(kendallCor(a, b), 1));
 
     // This test will fail if there are overflow bugs, especially in tie
     // handling.
     auto rng = chain(repeat(0, 100_000), repeat(1, 100_000));
-    assert(approxEqual(kendallCor(rng, rng), 1));
+    assert(isClose(kendallCor(rng, rng), 1));
 
     // Test the case where we have one range sorted already.
     assert(kendallCor(iota(5), [3, 1, 2, 5, 4]) ==
@@ -823,7 +823,7 @@ unittest {
         kendallCor([3, 1, 2, 5, 4], assumeSorted(iota(5)))
     );
 
-    assert(approxEqual(
+    assert(isClose(
         kendallCor(assumeSorted(iota(5)), assumeSorted(iota(5))), 1
     ));
 
@@ -929,11 +929,11 @@ unittest {
     uint[] consumerFear = [1, 2, 3, 4, 5, 6, 7];
     double partialCor =
     partial!pearsonCor(stock1Price, stock2Price, [economicHealth, consumerFear][]);
-    assert(approxEqual(partialCor, -0.857818));
+    assert(isClose(partialCor, -0.857818, 1e-2, 1e-2));
 
     double spearmanPartial =
     partial!spearmanCor(stock1Price, stock2Price, economicHealth, consumerFear);
-    assert(approxEqual(spearmanPartial, -0.7252));
+    assert(isClose(spearmanPartial, -0.7252, 1e-2, 1e-2));
 }
 
 private __gshared TaskPool emptyPool;
@@ -1001,7 +1001,7 @@ auto input = [[8.0, 6, 7, 5],
               [3.0, 0, 9, 3],
               [1.0, 4, 1, 5]];
 auto pearson = pearsonMatrix(input);
-assert(approxEqual(pearson[0, 0], 1));
+assert(isClose(pearson[0, 0], 1, 1e-2, 1e-2));
 ---
 */
 SymmetricMatrix!double pearsonMatrix(RoR)(RoR mat, TaskPool pool = null)
@@ -1058,7 +1058,7 @@ Examples:
 ---
 auto pearsonRoR = [[0.0], [0.0, 0.0], [0.0, 0.0, 0.0]];
 pearsonMatrix(input, pearsonRoR);
-assert(approxEqual(pearsonRoR[1][1], 1));
+assert(isClose(pearsonRoR[1][1], 1, 1e-2, 1e-2));
 ---
 */
 void pearsonMatrix(RoR, Ret)(RoR mat, ref Ret ans, TaskPool pool = null)
@@ -1298,39 +1298,38 @@ unittest {
 
     // Values from R.
 
-    alias approxEqual ae; // Save typing.
-    assert(ae(pearsonRoR[0][0], 1));
-    assert(ae(pearsonRoR[1][1], 1));
-    assert(ae(pearsonRoR[2][2], 1));
-    assert(ae(pearsonRoR[1][0], 0.3077935));
-    assert(ae(pearsonRoR[2][0], -0.9393364));
-    assert(ae(pearsonRoR[2][1], -0.6103679));
+    assert(isClose(pearsonRoR[0][0], 1, 1e-2, 1e-2));
+    assert(isClose(pearsonRoR[1][1], 1, 1e-2, 1e-2));
+    assert(isClose(pearsonRoR[2][2], 1, 1e-2, 1e-2));
+    assert(isClose(pearsonRoR[1][0], 0.3077935, 1e-2, 1e-2));
+    assert(isClose(pearsonRoR[2][0], -0.9393364, 1e-2, 1e-2));
+    assert(isClose(pearsonRoR[2][1], -0.6103679, 1e-2, 1e-2));
 
-    assert(ae(spearmanRoR[0][0], 1));
-    assert(ae(spearmanRoR[1][1], 1));
-    assert(ae(spearmanRoR[2][2], 1));
-    assert(ae(spearmanRoR[1][0], 0.3162278));
-    assert(ae(spearmanRoR[2][0], -0.9486833));
-    assert(ae(spearmanRoR[2][1], -0.5));
+    assert(isClose(spearmanRoR[0][0], 1, 1e-2, 1e-2));
+    assert(isClose(spearmanRoR[1][1], 1, 1e-2, 1e-2));
+    assert(isClose(spearmanRoR[2][2], 1, 1e-2, 1e-2));
+    assert(isClose(spearmanRoR[1][0], 0.3162278, 1e-2, 1e-2));
+    assert(isClose(spearmanRoR[2][0], -0.9486833, 1e-2, 1e-2));
+    assert(isClose(spearmanRoR[2][1], -0.5, 1e-2, 1e-2));
 
-    assert(ae(kendallRoR[0][0], 1));
-    assert(ae(kendallRoR[1][1], 1));
-    assert(ae(kendallRoR[2][2], 1));
-    assert(ae(kendallRoR[1][0], 0.1825742));
-    assert(ae(kendallRoR[2][0], -0.9128709));
-    assert(ae(kendallRoR[2][1], -0.4));
+    assert(isClose(kendallRoR[0][0], 1, 1e-2, 1e-2));
+    assert(isClose(kendallRoR[1][1], 1, 1e-2, 1e-2));
+    assert(isClose(kendallRoR[2][2], 1, 1e-2, 1e-2));
+    assert(isClose(kendallRoR[1][0], 0.1825742, 1e-2, 1e-2));
+    assert(isClose(kendallRoR[2][0], -0.9128709, 1e-2, 1e-2));
+    assert(isClose(kendallRoR[2][1], -0.4, 1e-2, 1e-2));
 
-    assert(ae(covRoR[0][0], 1.66666));
-    assert(ae(covRoR[1][1], 14.25));
-    assert(ae(covRoR[2][2], 4.25));
-    assert(ae(covRoR[1][0], 1.5));
-    assert(ae(covRoR[2][0], -2.5));
-    assert(ae(covRoR[2][1], -4.75));
+    assert(isClose(covRoR[0][0], 1.66666, 1e-2, 1e-2));
+    assert(isClose(covRoR[1][1], 14.25, 1e-2, 1e-2));
+    assert(isClose(covRoR[2][2], 4.25, 1e-2, 1e-2));
+    assert(isClose(covRoR[1][0], 1.5, 1e-2, 1e-2));
+    assert(isClose(covRoR[2][0], -2.5, 1e-2, 1e-2));
+    assert(isClose(covRoR[2][1], -4.75, 1e-2, 1e-2));
 
     version(scid) {
     static bool test(double[][] a, SymmetricMatrix!double b) {
         foreach(i; 0..3) foreach(j; 0..i + 1) {
-            if(!ae(a[i][j], b[i, j])) return false;
+                if(!isClose(a[i][j], b[i, j], 1e-2, 1e-2)) return false;
         }
 
         return true;

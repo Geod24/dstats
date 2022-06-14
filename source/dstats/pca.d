@@ -217,7 +217,7 @@ private PrincipalComponent firstComponentImpl(Ror)(
         foreach(i; 0..a.length) {
             if(!isFinite(a[i]) || !isFinite(b[i])) {
                 return true;
-            } else if(!approxEqual(a[i], b[i], opts.relError, opts.absError)) {
+            } else if(!isClose(a[i], b[i], opts.relError, opts.absError)) {
                 return false;
             }
         }
@@ -492,7 +492,8 @@ version(unittest) {
     // There are two equally valid answers for PCA that differ only by sign.
     // This tests whether one of them matches the test value.
     bool plusMinusAe(T, U)(T lhs, U rhs) {
-        return approxEqual(lhs, rhs) || approxEqual(lhs, map!"-a"(rhs));
+        return isClose(lhs, rhs, 1e-2, 1e-2) ||
+            isClose(lhs, map!"-a"(rhs), 1e-2, 1e-2);
     }
 }
 
